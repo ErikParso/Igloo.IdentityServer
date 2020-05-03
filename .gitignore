@@ -9,3 +9,5 @@
 /TestApi/obj
 /TestClient/bin
 /TestClient/obj
+/MVCClient/bin/Debug/netcoreapp3.1
+/MVCClient/obj
