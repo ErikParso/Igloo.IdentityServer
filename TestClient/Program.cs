@@ -16,14 +16,16 @@ namespace TestClient
 
 		private static async Task Execute()
 		{
+			// discover endpoints from metadata
 			var client = new HttpClient();
-			var disco = await client.GetDiscoveryDocumentAsync("http://localhost:5100");
+			var disco = await client.GetDiscoveryDocumentAsync("http://localhost:5000");
 			if (disco.IsError)
 			{
 				Console.WriteLine(disco.Error);
 				return;
 			}
 
+			// request token
 			var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
 			{
 				Address = disco.TokenEndpoint,
@@ -37,11 +39,16 @@ namespace TestClient
 				Console.WriteLine(tokenResponse.Error);
 				return;
 			}
+			else
+			{
+				Console.WriteLine(tokenResponse.Json);
+			}
 
+			// call api
 			var apiClient = new HttpClient();
 			apiClient.SetBearerToken(tokenResponse.AccessToken);
-			var response = await apiClient.GetAsync("http://localhost:5200/identity");
 
+			var response = await apiClient.GetAsync("http://localhost:5001/identity");
 			if (!response.IsSuccessStatusCode)
 			{
 				Console.WriteLine(response.StatusCode);
