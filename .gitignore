@@ -19,3 +19,5 @@
 /TestJsClient/obj/Debug/netcoreapp3.1
 /TestJsClient/obj
 /TestJsClient/TestJsClient.csproj.user
+/IdentityServerAspNetIdentity/bin/Debug/netcoreapp3.1
+/IdentityServerAspNetIdentity/obj
