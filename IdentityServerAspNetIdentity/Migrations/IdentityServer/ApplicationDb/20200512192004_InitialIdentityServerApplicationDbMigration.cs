@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace IdentityServerAspNetIdentity.Migrations
+namespace IdentityServerAspNetIdentity.Migrations.IdentityServer.ApplicationDb
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialIdentityServerApplicationDbMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
