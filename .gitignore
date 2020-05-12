@@ -12,3 +12,10 @@
 /MVCClient/bin/Debug/netcoreapp3.1
 /MVCClient/obj
 /MVCClient/MVCClient.csproj.user
+/TestJsClient/bin/Debug/netcoreapp3.1
+/TestJsClient/node_modules/.bin
+/TestJsClient/node_modules/base64-js
+/TestJsClient/node_modules
+/TestJsClient/obj/Debug/netcoreapp3.1
+/TestJsClient/obj
+/TestJsClient/TestJsClient.csproj.user
