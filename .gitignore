@@ -21,3 +21,4 @@
 /TestJsClient/TestJsClient.csproj.user
 /IdentityServerAspNetIdentity/bin/Debug/netcoreapp3.1
 /IdentityServerAspNetIdentity/obj
+*.user
