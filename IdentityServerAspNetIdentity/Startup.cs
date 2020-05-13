@@ -1,6 +1,5 @@
-﻿using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
-using IdentityServerAspNetIdentity.Data;
+﻿using IdentityServerAspNetIdentity.Data;
+using IdentityServerAspNetIdentity.Extension;
 using IdentityServerAspNetIdentity.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
 using System.Reflection;
 
 namespace IdentityServerAspNetIdentity
@@ -78,18 +76,15 @@ namespace IdentityServerAspNetIdentity
 			services.AddAuthentication()
 				.AddGoogle(options =>
 				{
-					// register your IdentityServer with Google at https://console.developers.google.com
-					// enable the Google+ API
-					// set the redirect URI to http://localhost:5000/signin-google
-					options.ClientId = "copy client ID from Google here";
-					options.ClientSecret = "copy client secret from Google here";
+					options.ClientId = "875390894801-5r6p4gvas518q408vl2f4bklvskdcmh2.apps.googleusercontent.com";
+					options.ClientSecret = "jOYGOOOTyvg7kHaNJeaz6hdH";
 				});
 		}
 
 		public void Configure(IApplicationBuilder app)
 		{
-			UpdateDatabase(app);
-			InitializeConfigDb(app);
+			app.UpdateDatabase();
+			app.InitializeConfigDb();
 
 			if (Environment.IsDevelopment())
 			{
@@ -98,7 +93,6 @@ namespace IdentityServerAspNetIdentity
 			}
 
 			app.UseStaticFiles();
-
 			app.UseRouting();
 			app.UseIdentityServer();
 			app.UseAuthorization();
@@ -106,66 +100,6 @@ namespace IdentityServerAspNetIdentity
 			{
 				endpoints.MapDefaultControllerRoute();
 			});
-		}
-
-		private static void UpdateDatabase(IApplicationBuilder app)
-		{
-			using (var serviceScope = app.ApplicationServices
-				.GetRequiredService<IServiceScopeFactory>()
-				.CreateScope())
-			{
-				using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
-				{
-					context.Database.Migrate();
-				}
-
-				using (var context = serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>())
-				{
-					context.Database.Migrate();
-				}
-
-				using (var context = serviceScope.ServiceProvider.GetService<ConfigurationDbContext>())
-				{
-					context.Database.Migrate();
-				}
-			}
-		}
-
-		private void InitializeConfigDb(IApplicationBuilder app)
-		{
-			using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-			{
-				serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-
-				var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-
-				if (!context.Clients.Any())
-				{
-					foreach (var client in Config.Clients)
-					{
-						context.Clients.Add(client.ToEntity());
-					}
-					context.SaveChanges();
-				}
-
-				if (!context.IdentityResources.Any())
-				{
-					foreach (var resource in Config.Ids)
-					{
-						context.IdentityResources.Add(resource.ToEntity());
-					}
-					context.SaveChanges();
-				}
-
-				if (!context.ApiResources.Any())
-				{
-					foreach (var resource in Config.Apis)
-					{
-						context.ApiResources.Add(resource.ToEntity());
-					}
-					context.SaveChanges();
-				}
-			}
 		}
 	}
 }
