@@ -22,3 +22,5 @@
 /IdentityServerAspNetIdentity/bin/Debug/netcoreapp3.1
 /IdentityServerAspNetIdentity/obj
 *.user
+/Igloo.IdentityServer/bin/Debug/netcoreapp3.1
+/Igloo.IdentityServer/obj
