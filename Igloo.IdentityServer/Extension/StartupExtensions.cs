@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Igloo.IdentityServer.Extension
 {
-	public static class StartupExtension
+	public static class StartupExtensions
 	{
 		/// <summary>
 		/// Uses migrations to update application, configuration and oprational database.
