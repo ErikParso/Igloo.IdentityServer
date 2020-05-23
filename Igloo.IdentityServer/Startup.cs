@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Reflection;
 
 namespace Igloo.IdentityServer
 {
@@ -41,49 +40,32 @@ namespace Igloo.IdentityServer
 				iis.AutomaticAuthentication = false;
 			});
 
-			services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+			services
+				.AddDbContext<ApplicationDbContext>(options =>
+					options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-			services.AddIdentity<ApplicationUser, IdentityRole>()
+			services
+				.AddIdentity<ApplicationUser, IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddDefaultTokenProviders();
 
-			var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+			services
+				.AddIdentityServer(Configuration.GetIdentityServerConfig())
+				.AddAspNetIdentity<ApplicationUser>()
+				.AddDeveloperSigningCredential();
 
-			var builder = services
-				.AddIdentityServer(options =>
-				{
-					options.Events.RaiseErrorEvents = true;
-					options.Events.RaiseInformationEvents = true;
-					options.Events.RaiseFailureEvents = true;
-					options.Events.RaiseSuccessEvents = true;
-				})
-				.AddConfigurationStore(options =>
-				{
-					options.ConfigureDbContext = b => b.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-						sql => sql.MigrationsAssembly(migrationsAssembly));
-				})
-				.AddOperationalStore(options =>
-				{
-					options.ConfigureDbContext = b => b.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-						sql => sql.MigrationsAssembly(migrationsAssembly));
-				})
-				.AddAspNetIdentity<ApplicationUser>();
-
-			// not recommended for production - you need to store your key material somewhere secure
-			builder.AddDeveloperSigningCredential();
-
-			services.AddAuthentication()
+			services
+				.AddAuthentication()
 				.AddGoogle(options =>
 				{
-					options.ClientId = "875390894801-5r6p4gvas518q408vl2f4bklvskdcmh2.apps.googleusercontent.com";
-					options.ClientSecret = "jOYGOOOTyvg7kHaNJeaz6hdH";
+					options.ClientId = Configuration.GetGoogleApi().ClientId;
+					options.ClientSecret = Configuration.GetGoogleApi().ClientSecret;
 				});
 		}
 
 		public void Configure(IApplicationBuilder app)
 		{
-			app.UpdateDatabase();
+			app.UpdateDatabases();
 			app.InitializeConfigDb();
 
 			if (Environment.IsDevelopment())

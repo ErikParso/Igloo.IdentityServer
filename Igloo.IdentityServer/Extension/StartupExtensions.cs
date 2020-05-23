@@ -3,6 +3,7 @@ using IdentityServer4.EntityFramework.Mappers;
 using Igloo.IdentityServer.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
@@ -10,70 +11,63 @@ namespace Igloo.IdentityServer.Extension
 {
 	public static class StartupExtensions
 	{
-		/// <summary>
-		/// Uses migrations to update application, configuration and oprational database.
-		/// </summary>
-		/// <param name="app"></param>
-		public static void UpdateDatabase(this IApplicationBuilder app)
+		public static void UpdateDatabases(this IApplicationBuilder app)
 		{
 			using (var serviceScope = app.ApplicationServices
 				.GetRequiredService<IServiceScopeFactory>()
 				.CreateScope())
 			{
+				var config = serviceScope.ServiceProvider.GetRequiredService<IConfiguration>().GetIdentityServerConfig();
+
 				using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
-				{
 					context.Database.Migrate();
-				}
 
-				using (var context = serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>())
-				{
-					context.Database.Migrate();
-				}
+				if (config.UseOperationalStore)
+					using (var context = serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>())
+						context.Database.Migrate();
 
-				using (var context = serviceScope.ServiceProvider.GetService<ConfigurationDbContext>())
-				{
-					context.Database.Migrate();
-				}
+				if (config.UseConfigurationStore)
+					using (var context = serviceScope.ServiceProvider.GetService<ConfigurationDbContext>())
+						context.Database.Migrate();
 			}
 		}
 
-		/// <summary>
-		/// Uses <see cref="Config"/> as seed for configurational database.
-		/// </summary>
-		/// <param name="app"></param>
 		public static void InitializeConfigDb(this IApplicationBuilder app)
 		{
 			using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
 			{
-				serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+				var config = serviceScope.ServiceProvider.GetRequiredService<IConfiguration>().GetIdentityServerConfig();
 
-				var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-
-				if (!context.Clients.Any())
+				if (config.UseConfigurationStore)
 				{
-					foreach (var client in Config.Clients)
-					{
-						context.Clients.Add(client.ToEntity());
-					}
-					context.SaveChanges();
-				}
+					var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
 
-				if (!context.IdentityResources.Any())
-				{
-					foreach (var resource in Config.Ids)
+					if (!context.Clients.Any())
 					{
-						context.IdentityResources.Add(resource.ToEntity());
+						foreach (var client in Config.Clients)
+						{
+							context.Clients.Add(client.ToEntity());
+						}
+						context.SaveChanges();
 					}
-					context.SaveChanges();
-				}
 
-				if (!context.ApiResources.Any())
-				{
-					foreach (var resource in Config.Apis)
+					if (!context.IdentityResources.Any())
 					{
-						context.ApiResources.Add(resource.ToEntity());
+						foreach (var resource in Config.Ids)
+						{
+							context.IdentityResources.Add(resource.ToEntity());
+						}
+						context.SaveChanges();
 					}
-					context.SaveChanges();
+
+					if (!context.ApiResources.Any())
+					{
+						foreach (var resource in Config.Apis)
+						{
+							context.ApiResources.Add(resource.ToEntity());
+						}
+						context.SaveChanges();
+					}
 				}
 			}
 		}
