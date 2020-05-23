@@ -23,7 +23,8 @@ namespace Igloo.IdentityServer
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-                new ApiResource("api1", "My API #1")
+                new ApiResource("api1", "My API #1"),
+				new ApiResource("iglooSmartHomeApi", "Igloo Smart Home")
             };
 
 		public static IEnumerable<Client> Clients =>
@@ -54,7 +55,7 @@ namespace Igloo.IdentityServer
 						IdentityServerConstants.StandardScopes.Profile,
 						IdentityServerConstants.StandardScopes.Phone,
 						IdentityServerConstants.StandardScopes.Address,
-						"api1"
+						"api1",
 					},
 					AllowOfflineAccess = true
 				},
@@ -65,10 +66,9 @@ namespace Igloo.IdentityServer
 					AllowedGrantTypes = GrantTypes.Code,
 					RequirePkce = true,
 					RequireClientSecret = false,
-
-					RedirectUris =           { "http://localhost:5003/callback.html" },
+					RedirectUris = { "http://localhost:5003/callback.html" },
 					PostLogoutRedirectUris = { "http://localhost:5003/index.html" },
-					AllowedCorsOrigins =     { "http://localhost:5003" },
+					AllowedCorsOrigins = { "http://localhost:5003" },
 
 					AllowedScopes =
 					{
@@ -76,6 +76,25 @@ namespace Igloo.IdentityServer
 						IdentityServerConstants.StandardScopes.Profile,
 						IdentityServerConstants.StandardScopes.Email,
 						"api1"
+					}
+				},
+				new Client
+				{
+					ClientId = "iglooSmartHomeClient",
+					ClientName = "Igloo SmartHome Client",
+					AllowedGrantTypes = GrantTypes.Code,
+					RequirePkce = true,
+					RequireClientSecret = false,
+					RedirectUris = { "http://localhost:5003/callback.html" },
+					PostLogoutRedirectUris = { "http://localhost:5003/index.html" },
+					AllowedCorsOrigins = { "http://localhost:5003" },
+
+					AllowedScopes =
+					{
+						IdentityServerConstants.StandardScopes.OpenId,
+						IdentityServerConstants.StandardScopes.Profile,
+						IdentityServerConstants.StandardScopes.Email,
+						"iglooSmartHomeApi"
 					}
 				}
 			};
