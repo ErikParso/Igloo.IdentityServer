@@ -8,11 +8,11 @@ using System.Collections.Generic;
 
 namespace Igloo.IdentityServer
 {
-    public static class Config
-    {
-        public static IEnumerable<IdentityResource> Ids =>
-            new IdentityResource[]
-            {
+	public static class Config
+	{
+		public static IEnumerable<IdentityResource> Ids =>
+			new IdentityResource[]
+			{
 				new IdentityResources.OpenId(),
 				new IdentityResources.Profile(),
 				new IdentityResources.Email(),
@@ -20,12 +20,13 @@ namespace Igloo.IdentityServer
 				new IdentityResources.Address(),
 			};
 
-        public static IEnumerable<ApiResource> Apis =>
-            new ApiResource[]
-            {
-                new ApiResource("api1", "My API #1"),
-				new ApiResource("iglooSmartHomeApi", "Igloo Smart Home")
-            };
+		public static IEnumerable<ApiResource> Apis =>
+			new ApiResource[]
+			{
+				new ApiResource("api1", "My API #1"),
+				new ApiResource("iglooSmartHomeApi", "Igloo Smart Home", new List<string> {
+					IdentityServerConstants.StandardScopes.Email })
+			};
 
 		public static IEnumerable<Client> Clients =>
 			new List<Client>
