@@ -25,7 +25,8 @@ namespace Igloo.IdentityServer
 			{
 				new ApiResource("api1", "My API #1"),
 				new ApiResource("iglooSmartHomeApi", "Igloo Smart Home", new List<string> {
-					IdentityServerConstants.StandardScopes.Email })
+					IdentityServerConstants.StandardScopes.Email
+				})
 			};
 
 		public static IEnumerable<Client> Clients =>
@@ -86,9 +87,9 @@ namespace Igloo.IdentityServer
 					AllowedGrantTypes = GrantTypes.Code,
 					RequirePkce = true,
 					RequireClientSecret = false,
-					RedirectUris = { "http://localhost:5003/callback.html" },
-					PostLogoutRedirectUris = { "http://localhost:5003/index.html" },
-					AllowedCorsOrigins = { "http://localhost:5003" },
+					RedirectUris = { "http://localhost:4200/smarthome" },
+					PostLogoutRedirectUris = { "http://localhost:4200/smarthome" },
+					AllowedCorsOrigins = { "http://localhost:4200" },
 
 					AllowedScopes =
 					{
