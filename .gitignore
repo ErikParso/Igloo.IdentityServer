@@ -24,3 +24,5 @@
 *.user
 /Igloo.IdentityServer/bin/Debug/netcoreapp3.1
 /Igloo.IdentityServer/obj
+/Igloo.IdentityServer/bin/Release/netcoreapp3.1
+/Igloo.IdentityServer/Properties/PublishProfiles/igloo-identityserver-app - Web Deploy.pubxml

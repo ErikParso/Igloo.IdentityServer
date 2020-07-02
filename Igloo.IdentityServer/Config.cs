@@ -87,9 +87,9 @@ namespace Igloo.IdentityServer
 					AllowedGrantTypes = GrantTypes.Code,
 					RequirePkce = true,
 					RequireClientSecret = false,
-					RedirectUris = { "http://localhost:4200/smarthome" },
-					PostLogoutRedirectUris = { "http://localhost:4200/smarthome" },
-					AllowedCorsOrigins = { "http://localhost:4200" },
+					RedirectUris = { "http://localhost:4200", "http://localhost:8000", "igloosmarthomeapp://" },
+					PostLogoutRedirectUris = { "http://localhost:4200", "http://localhost:8000", "igloosmarthomeapp://" },
+					AllowedCorsOrigins = { "http://localhost:4200", "http://localhost:8000" },
 
 					AllowedScopes =
 					{
